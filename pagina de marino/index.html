@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Solar</title>
+    <style>
+        body {
+            margin: 0;
+            background-color: #000;
+            font-family: Arial, sans-serif;
+        } 
+        #canvas-container {
+            position: relative;
+            height: 100vh;
+            width: 100%;
+            overflow: hidden;
+        }
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+        #info {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 5px;
+            color: #333;
+            z-index: 10;
+            display: none;
+        }
+        .content {
+            padding: 20px;
+            color: white;
+            background-color: #222;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="canvas-container">
+        <div id="info"></div>
+        <canvas id="canvas"></canvas>
+    </div>
+<!-- Sección para mostrar el título y la descripción del Sol debajo del sistema solar -->
+<div id="sol-section" style="text-align: center; margin-top: 20px;">
+    <h2>El Sol</h2>
+    <p>Descubre más sobre nuestra estrella madre.</p>
+    <button onclick="window.location.href='sol.html'" style="padding: 10px 20px; font-size: 16px; cursor: pointer;">
+        Ver más
+    </button>
+</div>
+
+    <div class="content">
+        <h1>Bienvenido al Sistema Solar</h1>
+        <p>Esta es una aplicación que muestra una visualización en 3D del sistema solar.</p>
+        <p>Haz clic en los planetas para obtener más información.</p>
+        <p>Contenido adicional para probar el scroll...</p>
+        <p style="height: 1500px;">Texto adicional para llenar la página y permitir el scroll.</p>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('canvas'), alpha: true, antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+
+// Añadir OrbitControls
+
+camera.position.set(0, 40, 120); // Posición de la cámara
+camera.rotation.x = -0.3;
+
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        scene.add(ambientLight);
+
+        const pointLight = new THREE.PointLight(0xffffff, 1, 100);
+        pointLight.position.set(0, 0, 0);
+        scene.add(pointLight);
+
+        function createStarBackground() {
+            const starTexture = new THREE.TextureLoader().load('estrellasback.jpg'); // Cambia por tu imagen de estrellas
+            const starGeometry = new THREE.SphereGeometry(500, 64, 64); // Radio grande para envolver todo
+            const starMaterial = new THREE.MeshBasicMaterial({
+                map: starTexture,
+                side: THREE.BackSide // Aplica la textura en el interior
+            });
+            const starMesh = new THREE.Mesh(starGeometry, starMaterial);
+            scene.add(starMesh);
+        }
+        function createSun() {
+            const sunTexture = new THREE.TextureLoader().load('sol.jpg');
+            const sunGeometry = new THREE.SphereGeometry(9, 64, 64);
+            const sunMaterial = new THREE.MeshStandardMaterial({ map: sunTexture, emissive: 0xffff00, emissiveIntensity: 0.2 });
+            const sun = new THREE.Mesh(sunGeometry, sunMaterial);
+            scene.add(sun);
+            return sun;
+        }
+
+        function createPlanet(texturePath, radius, distance) {
+            const texture = new THREE.TextureLoader().load(texturePath);
+            const geometry = new THREE.SphereGeometry(radius, 128, 128);
+            const material = new THREE.MeshStandardMaterial({ map: texture, emissive: 0x0000ff, emissiveIntensity: 0.1 });
+            const planet = new THREE.Mesh(geometry, material);
+            planet.userData = { distance: distance, defaultY: 0 };
+            scene.add(planet);
+            return planet;
+        }
+
+        const sun = createSun();
+        const mercury = createPlanet('mercurio.jpg', 2, 15);
+        const venus = createPlanet('venus.jpg', 3, 22);
+        const earth = createPlanet('tierra.jpg', 3, 30);
+        const mars = createPlanet('marte.jpg', 3.4, 38);
+        const jupiter = createPlanet('jupiter.jpg', 5, 50);
+        const saturn = createPlanet('saturno.jpg', 4.5, 60);
+        const uranus = createPlanet('urano.jpg', 4, 70);
+        const neptune = createPlanet('neptuno.jpg', 4, 80);
+
+        function createOrbit(distance) {
+            const orbitGeometry = new THREE.RingGeometry(distance, distance + 0.02, 100);
+            const orbitMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.DoubleSide });
+            const orbit = new THREE.Mesh(orbitGeometry, orbitMaterial);
+            orbit.rotation.x = Math.PI / 2;
+            scene.add(orbit);
+            return orbit;
+        }
+
+        createOrbit(15);
+        createOrbit(22);
+        createOrbit(30);
+        createOrbit(38);
+        createOrbit(50);
+        createOrbit(60);
+        createOrbit(70);
+        createOrbit(80);
+
+        camera.position.set(0, 40, 120);
+        camera.rotation.x = -0.3;
+
+        let angles = {
+            mercury: 0,
+            venus: 0,
+            earth: 0,
+            mars: 0,
+            jupiter: 0,
+            saturn: 0,
+            uranus: 0,
+            neptune: 0
+        };
+
+        let hoveredPlanet = null;
+
+        function onClick(event) {
+            const mouse = new THREE.Vector2();
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+            const raycaster = new THREE.Raycaster();
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(scene.children.filter(child => child instanceof THREE.Mesh));
+
+            if (intersects.length > 0) {
+                showPlanetInfo(intersects[0].object);
+            }
+        }
+
+        function showPlanetInfo(planet) {
+            const infoDiv = document.getElementById('info');
+            const planetName = planet === earth ? 'Tierra' : 
+                               planet === mercury ? 'Mercurio' : 
+                               planet === venus ? 'Venus' : 
+                               planet === mars ? 'Marte' : 
+                               planet === jupiter ? 'Júpiter' : 
+                               planet === saturn ? 'Saturno' : 
+                               planet === uranus ? 'Urano' : 
+                               planet === neptune ? 'Neptuno' : '';
+
+            if (planet === earth) {
+                infoDiv.innerHTML = ` 
+                    <h2>${planetName}</h2>
+                    <p><strong>Radio:</strong> ${planet.geometry.parameters.radius} unidades</p>
+                    <p><strong>Distancia al sol:</strong> ${planet.userData.distance} unidades</p>
+                    <p><strong>Datos adicionales:</strong> Este es nuestro hogar, el único planeta conocido que alberga vida.</p>
+                    <p><a href="tierra.html">Ver más sobre la Tierra</a></p>
+                `;
+                infoDiv.style.display = 'block';
+            } else {
+                infoDiv.innerHTML = `
+                    <h2>${planetName}</h2>
+                    <p><strong>Radio:</strong> ${planet.geometry.parameters.radius} unidades</p>
+                    <p><strong>Distancia al sol:</strong> ${planet.userData.distance} unidades</p>
+                    <p><strong>Datos adicionales:</strong> Es un planeta del sistema solar.</p>
+                `;
+                infoDiv.style.display = 'block';
+            }
+        }
+
+        function onMouseMove(event) {
+            const mouse = new THREE.Vector2();
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+            const raycaster = new THREE.Raycaster();
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(scene.children.filter(child => child instanceof THREE.Mesh));
+
+            if (intersects.length > 0 && intersects[0].object !== sun) {
+                hoveredPlanet = intersects[0].object;
+                hoveredPlanet.position.y = hoveredPlanet.userData.defaultY + 1; // Levantar el planeta
+            } else {
+                if (hoveredPlanet) {
+                    hoveredPlanet.position.y = hoveredPlanet.userData.defaultY; // Restaurar la posición del planeta
+                }
+                hoveredPlanet = null;   
+            }
+        }
+
+        function animate() {
+    angles.mercury += 0.04;
+    angles.venus += 0.015;
+    angles.earth += 0.01;
+    angles.mars += 0.008;
+    angles.jupiter += 0.002;
+    angles.saturn += 0.003;
+    angles.uranus += 0.004;
+    angles.neptune += 0.005;
+
+    // Posición orbital
+    mercury.position.set(Math.cos(angles.mercury) * mercury.userData.distance, mercury.position.y, Math.sin(angles.mercury) * mercury.userData.distance);
+    venus.position.set(Math.cos(angles.venus) * venus.userData.distance, venus.position.y, Math.sin(angles.venus) * venus.userData.distance);
+    earth.position.set(Math.cos(angles.earth) * earth.userData.distance, earth.position.y, Math.sin(angles.earth) * earth.userData.distance);
+    mars.position.set(Math.cos(angles.mars) * mars.userData.distance, mars.position.y, Math.sin(angles.mars) * mars.userData.distance);
+    jupiter.position.set(Math.cos(angles.jupiter) * jupiter.userData.distance, jupiter.position.y, Math.sin(angles.jupiter) * jupiter.userData.distance);
+    saturn.position.set(Math.cos(angles.saturn) * saturn.userData.distance, saturn.position.y, Math.sin(angles.saturn) * saturn.userData.distance);
+    uranus.position.set(Math.cos(angles.uranus) * uranus.userData.distance, uranus.position.y, Math.sin(angles.uranus) * uranus.userData.distance);
+    neptune.position.set(Math.cos(angles.neptune) * neptune.userData.distance, neptune.position.y, Math.sin(angles.neptune) * neptune.userData.distance);
+
+    // Rotación sobre el eje
+    mercury.rotation.y += 0.01; // Ajusta la velocidad de rotación sobre el eje
+    venus.rotation.y += 0.01;
+    earth.rotation.y += 0.01;
+    mars.rotation.y += 0.01;
+    jupiter.rotation.y += 0.01;
+    saturn.rotation.y += 0.01;
+    uranus.rotation.y += 0.01;
+    neptune.rotation.y += 0.01;
+
+    // Rotación del Sol
+    sun.rotation.y += 0.001;
+
+    requestAnimationFrame(animate);
+    renderer.render(scene, camera);
+}
+     
+        createStarBackground();
+        animate();
+
+        window.addEventListener('click', onClick);
+        window.addEventListener('mousemove', onMouseMove);
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>
