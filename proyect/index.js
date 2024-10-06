@@ -26,3 +26,14 @@ window.addEventListener('load',()=>{
         contenedorPlanetas.style.display='block';
     }, 2000);
 });
+
+$(document).ready(function(){
+    $('.anclaEfectoAnimada').click(function(e){       
+      e.preventDefault();   //Para evitar el evento de un enlace normal
+      var miAncla=$(this).attr('href'); //id del ancla
+      $('body,html').stop(true,true).animate({        
+        scrollTop: $(miAncla).offset().top
+      },4000);
+  
+    });
+  });

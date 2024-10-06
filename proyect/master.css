@@ -1,19 +1,25 @@
 @font-face {
     font-family: 'avenir-next-world-medium';
-    src: url('./fonts/avenir-next-world-medium.otf') format('opentype');
+    src: url('./avenir-next-world-medium.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+
+    font-family: 'AvenirNextWorldMedium';
+    src: url('./avenir-next-world-medium.otf') format('opentype');
     font-weight: normal;
     font-style: normal;
 }
+
  /* Importar la fuente Stolzl-Bold en formato .ttf */
 @font-face {
     font-family: 'StolzlBold';
-    src: url('fonts/Stolzl-Bold.ttf') format('truetype');
+    src: url('./fonts/Stolzl-Bold.ttf') format('truetype');
     font-weight: bold;
     font-style: normal;
 }
 @font-face {
     font-family: 'BurfordRusticLine';
-    src: url('./fonts/BurfordRusticLine-Regular3\ 400.otf') format('opentype');
+    src: url('./fonts/BurfordRusticLine-Regular.otf') format('opentype');
     font-weight: normal;
     font-style: normal;
 }
@@ -24,22 +30,30 @@
     font-style: normal;
 }
 :root{
- --text: 'Steics';
- --title-main:'StolzlBold';
+ --text: 'AvenirNextWorldMedium', sans-serif;
+ --title-main:'StolzlBold', sans-serif;
 }
+
 *{
     margin: 0;
     border: 0;
     padding: 0;
-    font-family: 'Stolzl-Bold', sans-serif;
+    /* font-family: 'Stolzl-Bold', sans-serif; */
 }
 
 body{
     background-color: black;
+    overflow-x: hidden;
 }
 ul{
     list-style: none;
     padding-left: 0;
+}
+h3{
+    font-family: 'BurfordRusticLine',sans-serif;
+}
+.enlace{
+    font-family: 'BurfordRusticLine',sans-serif;
 }
 .title-main{
     text-transform: uppercase;
@@ -59,7 +73,12 @@ img{
 }
 /* Contenedor - del banner */
 .contenedor{
-    display: none;
+    display: block;
+}
+.text-secundario{
+    font-family: var(--text);
+    font-weight: normal;
+   color:white;
 }
 /* Menu - contiene la parte superior */
 .menu{
@@ -88,7 +107,7 @@ img{
     color: #f1f1f1;
     font-weight: bold;
     font-size: 50px;
-    font-family: 'BurfordRusticLine';
+    font-family: 'BurfordRusticLine',sans-serif;
 }
 .logo--nombre span{
     color: rgb(248,194,0);
@@ -99,13 +118,13 @@ img{
     }
 }
 .logo img{
-    width: 45px;
-    height: 45px;
+    width: 9rem;
+    height: 9rem;
     cursor: pointer;
 }
 @media (min-width:768px) {
     .logo img{
-        display: none;
+        display:block;
     }
 }
 /* Contenedor de la navegacion */
@@ -139,26 +158,118 @@ img{
     .navegacion{
         flex-direction: row;
         gap: 20px;
+        background-color: rgba(0, 0, 0, 0.9);
+    }
+    .navegacion li a{
+        width: 100%;
+    }
+    #hamburguesa{
+        display: block;
     }
 }
-.navegacion li{
+/* /* Estilos generales */
+.navegacion li {
     width: 100%;
     text-align: center;
-    font-family: 'BurfordRusticLine' sans-serif !important;
+    font-family: 'BurfordRusticLine', sans-serif !important;
 }
-.navegacion li a{
+
+.navegacion li a {
     display: block;
     padding: 10px;
-    font-family: 'BurfordRusticLine';
+    width: 7rem;
+    font-family: 'BurfordRusticLine', sans-serif;
 }
-.navegacion li:last-of-type{
+
+.navegacion li:last-of-type {
     width: auto;
 }
-.navegacion li a:hover{
-    background-color: rgb(248,194,0);
+
+.navegacion li a:hover {
+    background-color: #5e7c93;
 }
-.navegacion li:last-of-type:hover{
+
+.navegacion li:last-of-type:hover {
     background-color: transparent;
+}
+
+/* Estilos para pantallas pequeñas */
+.menu {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+}
+
+#hamburguesa {
+    cursor: pointer;
+    display: none; /* Ocultarlo en pantallas grandes */
+}
+
+/* Ocultar el menú por defecto en dispositivos móviles */
+.menu--navegacion {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Mostrar el menú cuando se haga clic en el ícono de hamburguesa */
+.menu--navegacion.show {
+    display: flex;
+}
+
+/* Estilos para pantallas grandes */
+@media (min-width: 768px) {
+    .navegacion {
+        display: flex;
+        justify-content: space-around;
+    }
+
+    .navegacion li {
+        width: auto;
+    }
+
+    #hamburguesa {
+        display: none; /* Ocultar el ícono de hamburguesa en pantallas grandes */
+    }
+
+    .menu--navegacion {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+}
+
+/* Estilos para pantallas pequeñas */
+@media (max-width: 768px) {
+    #hamburguesa {
+        display: block; /* Mostrar el ícono de hamburguesa en pantallas pequeñas */
+    }
+
+    .navegacion li a {
+        width: 100%;
+        text-align: center;
+    }
+
+    .menu--navegacion {
+        width: 100%;
+    }
+
+    .menu--navegacion ul {
+        width: 100%;
+        text-align: center;
+    }
+
+    .navegacion li {
+        width: 100%;
+        padding: 10px 0;
+    }
+}
+
+#hamburguesa{
+    display: none;
+    color: white;
+    background: white;
 }
 /* Formulario - lupa y el input */
 /* .formulario{
@@ -237,6 +348,7 @@ margin-top: 30px;
 .planetas{
     width: 80%;
     height: 70%;
+    padding: 20px 10px;
     position: relative;
 }
 .planetas img{
@@ -294,23 +406,32 @@ margin-top: 30px;
     }
 }
 /* Scroll infinito */
+
+
+
 .contenedor--planetas{
     padding-top: 40px;
     padding-bottom: 10px;
     display: none;
+    height: 9rem;
+    
 }
+
 .lista--planetas{
     width: 95%;
     margin: auto;
     display: flex;
     gap: 10px;
-    overflow: hidden;
+    padding: 20px 10px;
+    /* overflow: hidden; */
+    position: relative;
 
 }
 .lista--planetas::-webkit-scrollbar{
     width: 0;
 }
 .lista--planetas li{
+    position: relative;
     width: 80%;
     display: flex;
     align-items: center;
@@ -318,14 +439,45 @@ margin-top: 30px;
     padding: 5px;
     border-radius: 10px;
     background-color: #0f0f0fec;
+    font-family: var(--text);
     transition: background-color .5s ease-in;
 }
+.hover-data-planes {
+    display: none;
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.7); 
+    /* background-color: rgb(248,194,0.7); */
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+    top: -90px;
+    width: 10rem;
+    left: 0px; /* Ajusta según tu diseño */
+    z-index: 10;
+}
+
+/* .hover-data-planes {
+    position: absolute;
+   /* top: -50px;
+    left: 60%;
+     transform: translateX(-50%); */
+    /* background-color: rgba(0, 0, 0, 0.8);  */
+    /* background-color: rgb(248,194,0.8);
+    color: white;
+    padding: 10px;
+    border-radius: 8px;
+    white-space: nowrap;
+    display: none;
+    z-index: 1000; */
+/* }  */
+
 .lista--planetas li:hover{
-    background-color: rgb(248,194,0);
+    background-color: #5e7c93;
     cursor: pointer;
 }
 .lista--planetas li img{
     width: 100px;
+     
 }
 .lista--planetas p{
     color: #f1f1f1;
@@ -412,25 +564,29 @@ margin-top: 30px;
     background-repeat: no-repeat;
     position: relative;
 }
-
+/* .universo-neos:hover{filter: grayscale(80%);} */
 .number h1 {
     font-size: 200px;
     font-weight: bold;
     background: url('https://example.com/path-to-planet-image.jpg'); /* Reemplaza con la imagen correcta */
     background-clip: text;
-    color: #9ebfd9;
+    color: #5e7c93;
 }
 
 .content {
     max-width: 600px;
 }
-
+.title-neo{
+    font-family: var(--title-main);
+}
 .title-neo, .text-neo{
     color:white;
+    padding: 8px;
 }
 .btn--info-main{
-    border-radius: 15px; 
-    background: #9ebfd9;
+    display:block;
+    border-radius: 5px;
+    background:rgb(248,194,0);
 }
 .btn--info-main a{
     font-family: 'BurfordRusticLine';
@@ -440,7 +596,7 @@ margin-top: 30px;
     padding: 20px;
     border-radius: 15px;
     display: block;
-    width: 200px;
+    width: 8rem;
 }
 .content h2 {
     font-size: 50px;
@@ -454,10 +610,45 @@ margin-top: 30px;
     /* font-family: var(--text); */
 }
 
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .universo-neos, .universo-planetas, .universo-sistema {
+        flex-direction: column;
+        justify-content: flex-start;
+        height: auto;
+        padding: 20px;
+    }
 
+    .number h1 {
+        font-size: 100px;
+        text-align: center;
+    }
+
+    .content, .content-planetas, .content-sistema {
+        text-align: center;
+        max-width: 100%;
+        padding: 20px;
+    }
+
+    .title-neo {
+        font-size: 28px;
+        font-family: var(--title-main);
+    }
+
+    .text-secundario {
+        font-size: 16px;
+    }
+
+    .btn--info-main {
+        max-width: 100%;
+    }
+
+    .btn--info-main a {
+        font-size: 18px;
+        padding: 15px;
+    }
+}
 /*  stylo del banner  02  conoce los planetas */
-
-  /* estilo de banner 01  *//* Reset CSS */
 
   .universo-planetas {
     display: flex;
@@ -475,40 +666,254 @@ margin-top: 30px;
 .number h1 {
     font-size: 200px;
     font-weight: bold;
-    background: url('../proyect/img/NEOS2.jpg'); /* Reemplaza con la imagen correcta */
+    background: url('../proyect/img/sol.jpg'); /* Reemplaza con la imagen correcta */
     background-clip: text;
     color: #9ebfd9;
 }
 
 .content-planetas {
     max-width: 600px;
+    background-color: transparent;
 }
 
-.title-neo, .text-neo{
-    color:white;
-}
-.btn--info-main{
+
+/* .btn--info-main{
     border-radius: 15px; 
     background: #9ebfd9;
-}
+} */
 .btn--info-main a{
-    font-family: 'BurfordRusticLine';
+    font-family: 'BurfordRusticLine', sans-serif;
     font-size: 20px;
     text-align: center;
     color: #0f0f0fec;
     padding: 20px;
     border-radius: 15px;
     display: block;
-    width: 200px;
+    width: 8rem;
 }
-.content h2 {
+.content-planetas h2 {
     font-size: 50px;
     letter-spacing: 5px;
     margin-bottom: 20px;
 }
 
-.content p {
+.content-planetas p {
     line-height: 1.6;
     font-size: 18px;
     /* font-family: var(--text); */
+}
+
+
+/*  stylo del banner  03  sobre el sistema solar en 3d */
+
+.universo-sistema {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 80%;
+    padding: 0 50px;
+    position: relative;
+}
+
+.solsection-left-sol img {
+    width: 500px; /* Ajusta el tamaño de la imagen si es necesario */
+    animation: rotarSol 10s linear infinite; /* Aplicamos la animación */
+}
+
+/* Animación de rotación para la imagen */
+@keyframes rotarSol {
+    from {
+        transform: rotate(0deg); /* Comienza sin rotación */
+    }
+    to {
+        transform: rotate(360deg); /* Completa una rotación completa en su eje */
+    }
+}
+
+/* Aseguramos que la sección de contenido esté alineada correctamente */
+.content-sistema {
+    max-width: 50%;
+}
+
+.number {
+    font-size: 100px; /* Ajusta el tamaño del número */
+    color: #fff; /* El color que mejor te convenga */
+}
+
+/* Botón de exploración */
+.btn--info-main a {
+    display:inline-block;
+    padding: 10px 20px;
+    /* background-color: #007bff; */
+    color: #fff;
+    width: 100%;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.btn--info-main:hover {
+    background-color: #5e7c93;;
+}
+
+/* estylos  de hover de los planetas */
+
+
+/* los estilo de Footer */
+.footer {
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.5)), 
+    url('./img/universo.jpeg') no-repeat center center/cover;
+     padding: 50px 0;
+    /* background: url('./img/fondo_tierra.jpg') no-repeat center center/cover; */
+    color: white;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+/* Sección de contacto */
+.footer-section.contact {
+    flex: 1;
+    min-width: 250px;
+}
+
+.footer-section.contact h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.footer-section.contact p {
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.footer-section.contact a {
+    color: #9ebfd9;
+    text-decoration: none;
+}
+
+/* Sección de suscripción */
+.footer-section.subscribe {
+    flex: 1;
+    min-width: 250px;
+}
+
+.footer-section.subscribe p {
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.footer-section.subscribe form {
+    display: flex;
+    align-items: center;
+}
+
+.footer-section.subscribe input {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    margin-right: 10px;
+    width: 200px;
+}
+
+.footer-section.subscribe button {
+    background-color: #9ebfd9;
+    color: #000;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Sección de enlaces */
+.footer-section.links {
+    flex: 2;
+    display: flex;
+    justify-content: space-between;
+}
+
+.footer-column {
+    min-width: 200px;
+}
+
+.footer-column h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #9ebfd9;
+}
+
+.footer-column ul {
+    list-style: none;
+}
+
+.footer-column ul li {
+    margin-bottom: 8px;
+}
+
+.footer-column ul li a {
+    color: white;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-column ul li a:hover {
+    color: #9ebfd9;
+}
+
+/* Responsive Design */
+/* Responsive Styles */
+@media (max-width: 768px) {
+    footer {
+        flex-direction: column;
+        padding: 20px;
+        text-align: center;
+    }
+
+    footer .column {
+        margin: 20px 0;
+    }
+
+    footer .subscribe {
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    footer .subscribe input[type="email"] {
+        margin-bottom: 10px;
+        width: 100%;
+        max-width: 300px;
+    }
+
+    footer .subscribe button {
+        width: 100%;
+        max-width: 150px;
+    }
+}
+
+@media (max-width: 480px) {
+    footer {
+        padding: 10px;
+    }
+
+    footer .column h3 {
+        font-size: 16px;
+    }
+
+    footer .subscribe input[type="email"] {
+        width: 100%;
+    }
+
+    footer .subscribe button {
+        width: 100%;
+    }
 }
