@@ -7,7 +7,7 @@ function App() {
   return (
     <>
       <div>
-        <h1>Planetarium</h1>
+        <h1>Orbitarium</h1>
         <OrbitalSimulation></OrbitalSimulation>
       </div>
       
