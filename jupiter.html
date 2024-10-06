@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Explora Júpiter</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      overflow-x: hidden;
+      background-color: #000; /* Fondo negro */
+    }
+
+    /* Contenedor de la página principal */
+    #container {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      background-image: url('jupiter6.jpg'); /* Imagen de fondo de Júpiter */
+      background-size: cover;
+      background-position: center;
+      transition: transform 2s ease, background-image 2s ease;
+    }
+
+    #container::before, #container::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 150px;
+      z-index: 1;
+    }
+
+    #container::before {
+      top: 0;
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0)); /* Degradado en la parte superior */
+    }
+
+    #container::after {
+      bottom: 0;
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)); /* Degradado en la parte inferior */
+    }
+
+    #container.zoomed {
+      transform: scale(1.5);
+      background-image: url('jupiter6.jpg'); /* Imagen de zoom en Júpiter */
+    }
+
+    /* Información sobre Júpiter al inicio */
+    #overlay {
+      position: absolute;
+      bottom: 20%;
+      left: 5%;
+      color: white;
+      font-size: 2em;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+      transition: opacity 1s ease;
+    }
+
+    #overlay.hidden {
+      opacity: 0;
+    }
+
+    #more-info {
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-size: 1.5em;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+      transition: opacity 1s ease;
+    }
+
+    #more-info.visible {
+      display: block;
+      opacity: 1;
+    }
+
+    #back-btn {
+  margin-top: 20px;
+  padding: 15px 30px; /* Ajusta el tamaño del botón */
+  font-size: 1.2em; /* Tamaño del texto */
+  background-color: #FFCC00; /* Color amarillo */
+  border: none;
+  color: black;
+  cursor: pointer;
+  border-radius: 10px; /* Bordes redondeados */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s;
+}
+
+#back-btn:hover {
+  background-color: #E6B800; /* Cambio de color en hover */
+}
+
+#zoom-btn {
+  margin-top: 20px;
+  padding: 15px 30px; /* Ajusta el tamaño del botón */
+  font-size: 1.2em; /* Tamaño del texto */
+  background-color: #FFCC00; /* Color amarillo */
+  border: none;
+  color: black;
+  cursor: pointer;
+  border-radius: 10px; /* Bordes redondeados */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s;
+}
+
+#zoom-btn:hover {
+  background-color: #E6B800; /* Cambio de color en hover */
+}
+
+    /* Nueva sección de características */
+    .features-section {
+      position: relative;
+      width: 100vw;
+      min-height: 100vh;
+      background-image: url('jupiter7.jpg');
+      background-size: cover;
+      background-position: center;
+      color: white; 
+      text-align: left;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      opacity: 0;
+      transform: translateY(20%);
+      visibility: hidden;
+      padding-left: 40%;
+      padding-top: 300px; /* Agregar espacio en la parte superior */
+      margin-top: 300px; /* Ajuste del margen superior para separar las secciones */
+    }
+
+    .features-section::before, .features-section::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 150px;
+      z-index: 1;
+    }
+
+    .features-section::before {
+      top: 0;
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0)); /* Degradado al inicio */
+    }
+
+    .features-section::after {
+      bottom: 0;
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)); /* Degradado al final */
+    }
+
+    .features-section.visible {
+      display: flex;
+      opacity: 1;
+      transform: translateY(0);
+      visibility: visible;
+      overflow-y: hidden;
+    }
+
+    .features-title {
+      font-size: 3.5em;
+      font-weight: bold;
+      color: #fff;
+      z-index: 2;
+      position: relative;
+      margin-top: 100px;
+      text-align: left;
+    }
+
+    .features-description {
+      font-size: 1.2em;
+      max-width: 700px;
+      color: rgba(255, 255, 255, 0.8);
+      z-index: 2;
+      position: relative;
+      margin-top: 20px;
+      text-align: justify;
+      line-height: 1.6em;
+    }
+
+    .features-subtitle {
+      font-size: 2em;
+      font-weight: bold;
+      color: rgba(255, 255, 255, 0.9);
+      margin-top: 30px;
+      z-index: 2;
+      position: relative;
+    }
+
+    .features-list {
+      font-size: 1.2em;
+      max-width: 700px;
+      color: rgba(255, 255, 255, 0.8);
+      z-index: 2;
+      position: relative;
+      text-align: justify;
+      line-height: 1.6em;
+      margin-top: 300px;
+      margin-bottom: 300px;
+    }
+
+    .features-list li {
+      margin-bottom: 30px;
+      display: flex;
+      align-items: flex-start;
+      position: relative;
+    }
+
+    .features-list img {
+      width: 50px;
+      height: 50px;
+      margin-right: 20px;
+      margin-left: -70px;
+      position: absolute;
+    }
+
+    .features-list strong {
+      font-size: 1.4em;
+      margin-bottom: 5px;
+    }
+
+    /* Número 02 en la esquina superior izquierda */
+    .features-number {
+      font-size: 15em;
+      font-weight: bold;
+      background-image: url('jupiter8.jpg');
+      background-size: cover;
+      background-position: center;
+      -webkit-background-clip: text;
+      color: transparent;
+      position: absolute;
+      left: 5%;
+      top: 5%;
+      z-index: 2;
+    }
+
+    /* Nueva sección - Número 03 en la esquina superior derecha */
+    .pearls-section-number {
+      font-size: 15em;
+      font-weight: bold;
+      background-image: url('pearls_jupiter.jpg');
+      background-size: cover;
+      background-position: center;
+      -webkit-background-clip: text;
+      color: rgba(255, 255, 255, 0.5);
+      position: absolute;
+      left: 5%;
+      top: 5%;
+      z-index: 2;
+    }
+
+    /* Estilo para el número 04 */
+    .composition-section-number {
+      font-size: 15em;
+      font-weight: bold;
+      background-image: url('jupiter4.jpg');
+      background-size: cover;
+      background-position: center;
+      -webkit-background-clip: text;
+      color: rgba(255, 255, 255, 0.5);
+      position: absolute;
+      left: 5%;
+      top: 5%;
+      z-index: 2;
+    }
+
+    /* Sección de clima */
+    .climate-section {
+      position: relative;
+      width: 100vw;
+      min-height: 100vh;
+      background-image: url('jupiter8.jpg');
+      background-size: cover;
+      background-position: center;
+      color: white;
+      text-align: left;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      opacity: 0;
+      transform: translateY(20%);
+      visibility: hidden;
+      padding-left: 40%;
+      padding-bottom: 200px; /* Ajuste del espacio al final de la sección */
+      margin-bottom: 200px;
+      transition: opacity 1.5s ease, transform 1.5s ease;
+    }
+
+    .climate-section::before, .climate-section::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 150px;
+      z-index: 1;
+    }
+
+    .climate-section::before {
+      top: 0;
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0)); /* Degradado al inicio */
+    }
+
+    .climate-section::after {
+      bottom: 0;
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)); /* Degradado al final */
+    }
+
+    .climate-section.visible {
+      display: flex;
+      opacity: 1;
+      transform: translateY(0);
+      visibility: visible;
+      overflow-y: hidden;
+    }
+
+    /* Sección de composición (04) */
+    .composition-section {
+      position: relative;
+      width: 100vw;
+      min-height: 100vh;
+      background-color: #000;
+      color: white;
+      padding: 100px 10%;
+      display: none;
+      z-index: 1;
+      padding-bottom: 100px; /* Ajuste del espacio al final de la sección */
+    }
+
+    .composition-section::before, .composition-section::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 150px;
+      z-index: 1;
+    }
+
+    .composition-section::before {
+      top: 0;
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0)); /* Degradado al inicio */
+    }
+
+    .composition-section::after {
+      bottom: 0;
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)); /* Degradado al final */
+    }
+
+    .composition-section.visible {
+      display: block;
+    }
+
+    .composition-section h2 {
+      font-size: 3.5em;
+      color: #fff;
+      margin-bottom: 50px;
+    }
+
+    .composition-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .composition-content .text {
+      width: 40%;
+    }
+
+    .composition-content .text p {
+      font-size: 1.2em;
+      line-height: 1.6;
+    }
+
+    .composition-content .chart {
+      width: 70%;
+      margin-right: 50px;
+      position: relative;
+    }
+
+    .chart-circle {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background-color: #333;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0 auto;
+      background: conic-gradient(
+        #1E90FF 0% 90%, /* Azul para el 90% */
+        #FF4500 90% 100% /* Rojo para el restante 10% */
+      );
+    }
+
+    .chart-inner {
+      width: 180px;
+      height: 180px;
+      background-color: #000;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .chart-circle p {
+      font-size: 2em;
+      color: white;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .chart-circle small {
+      font-size: 0.8em;
+      display: block;
+      color: #fff;
+      position: relative;
+      z-index: 2;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sección del container original -->
+  <div id="container">
+    <div id="overlay">
+      <h1>JÚPITER</h1>
+      <p>El gigante gaseoso del Sistema Solar</p>
+      <button id="zoom-btn">Ver más</button>
+    </div>
+
+    <div id="more-info">
+      <h1>Visión General</h1>
+      <p>Júpiter es el planeta más grande del Sistema Solar, conocido por sus anillos delgados y la Gran Mancha Roja.</p>
+      <button id="back-btn">Volver</button>
+    </div>
+  </div>
+
+  <!-- Sección de características oculta -->
+  <div class="features-section" id="features-section">
+    <div class="features-overlay"></div>
+    <h1 class="features-title">CARACTERÍSTICAS</h1>
+    <h2 class="features-number">02</h2>
+    <p class="features-description">
+      Júpiter es un planeta gigante gaseoso compuesto principalmente de hidrógeno y helio, con tormentas masivas como la Gran Mancha Roja.
+    </p>
+    <p class="features-subtitle">¿Qué hace a Júpiter especial?</p>
+
+    <ul class="features-list" style="margin-top: 10px;padding-left: 0;">
+      <li>
+        <img src="e.png" alt="Atmósfera">
+        <div>
+          <strong>Atmósfera:</strong>
+          La atmósfera de Júpiter está compuesta principalmente de hidrógeno y helio, con nubes de amoníaco y vapor de agua.
+        </div>
+      </li>
+
+      <li>
+        <img src="e.png" alt="Gran Mancha Roja">
+        <div>
+          <strong>Gran Mancha Roja:</strong>
+          Es una gigantesca tormenta anticiclónica en la atmósfera de Júpiter, que ha existido por al menos 300 años.
+        </div>
+      </li>
+      <li>
+        <img src="e.png" alt="Anillos">
+        <div>
+          <strong>Anillos:</strong>
+          Aunque no tan prominentes como los de Saturno, Júpiter tiene un sistema de anillos muy delgado.
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Nueva sección para PEARLS -->
+<div class="climate-section" id="pearls-section">
+  <div class="features-overlay-right"></div>
+  <h2 class="features-title" style="margin-left: -8%; margin-top: 650px;">TEMPERATURAS EN JÚPITER</h2>
+  <h2 class="pearls-section-number" style="top: 20%;">03</h2> <!-- Ajustamos el valor de top para mover el número hacia abajo -->
+  <p class="features-description" style="margin-top: 40px;"> <!-- Bajamos el texto aún más -->
+    Las temperaturas en la atmósfera de Júpiter pueden alcanzar los -145 °C, pero en su núcleo podrían superar los 24,000 °C.
+  </p>
+
+  <ul class="features-list" style="margin-top: 10px; padding-left: 0;">
+    <li>
+      <img src="e.png" alt="Temperatura Media">
+      <div>
+        <strong>Temperatura Atmosférica:</strong>
+        Las temperaturas más frías en Júpiter son de -145 °C, mientras que en el núcleo se estima que superan los 24,000 °C.
+      </div>
+    </li>
+  </ul>
+</div>
+
+
+  <!-- Sección para COMPOSICIÓN DE JÚPITER -->
+  <div class="composition-section" id="composition-section">
+    <h2 class="features-title">COMPOSICIÓN DE JÚPITER</h2>
+    <h2 class="composition-section-number">04</h2>
+    <div class="composition-content">
+      <div class="text">
+        <p><strong>Núcleo:</strong> Se cree que el núcleo de Júpiter está compuesto de elementos pesados y podría estar rodeado por una capa de hidrógeno metálico.</p>
+        <p><strong>Atmósfera:</strong> Compuesta principalmente de hidrógeno (90%) y helio (10%).</p>
+      </div>
+
+      <!-- Gráfico de composición -->
+      <div class="chart">
+        <div class="chart-circle">
+          <div class="chart-inner">
+            <p>90%</p>
+            <small>Hidrógeno</small>
+          </div>
+        </div>
+        <p style="text-align:center; margin-top:10px;">
+          La atmósfera de Júpiter está dominada por hidrógeno (90%) y helio (10%).
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const container = document.getElementById('container');
+    const overlay = document.getElementById('overlay');
+    const button = document.getElementById('zoom-btn');
+    const moreInfo = document.getElementById('more-info');
+    const backButton = document.getElementById('back-btn');
+    const featuresSection = document.getElementById('features-section');
+    const pearlsSection = document.getElementById('pearls-section');
+    const compositionSection = document.getElementById('composition-section');
+    let zoomedIn = false;
+
+    // Mostrar la sección de características al hacer clic
+    button.addEventListener('click', () => {
+      if (!zoomedIn) {
+        container.classList.add('zoomed');
+        overlay.classList.add('hidden');
+        moreInfo.classList.add('visible');
+        featuresSection.classList.add('visible');
+        pearlsSection.classList.add('visible');
+        compositionSection.classList.add('visible');
+        zoomedIn = true;
+      }
+    });
+
+    // Volver atrás
+    backButton.addEventListener('click', () => {
+      if (zoomedIn) {
+        container.classList.remove('zoomed');
+        overlay.classList.remove('hidden');
+        moreInfo.classList.remove('visible');
+        featuresSection.classList.remove('visible');
+        pearlsSection.classList.remove('visible');
+        compositionSection.classList.remove('visible');
+        zoomedIn = false;
+      }
+    });
+  </script>
+
+</body>
+</html>
