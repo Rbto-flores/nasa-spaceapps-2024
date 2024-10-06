@@ -1,5 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
+// @ts-ignore
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { orbitObject } from './types/orbitObjetc';
 import objectsData from './assets/objects.json';
