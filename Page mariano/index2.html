@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API de NASA</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Datos de NASA API</h1>
+    <script>
+        // Clave API de demostración
+        const apiKey = 'DEMO_KEY'; // Usando la clave de demostración
+    
+        // Función para cargar datos
+        function loadData() {
+            const startDate = '2024-09-15'; // Fecha de inicio
+            const endDate = '2024-09-21'; // Fecha de fin
+            const neoUrl = 'https://api.nasa.gov/neo/rest/v1/feed?start_date='${startDate}'&end_date=${endDate}&api_key='.${apiKey}.'';
+    
+            const resultsDiv = document.getElementById('results'); // Definir resultsDiv aquí
+            fetch(neoUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error en la solicitud: ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    displayResults(data.near_earth_objects); // Usar los resultados de la respuesta
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    resultsDiv.innerHTML = <p style="color: red;">Error al cargar datos: ${error.message}</p>;
+                });
+        }
+    
+        // Función para mostrar resultados
+        function displayResults(neos) {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = ''; // Limpiar resultados anteriores
+    
+            // Iterar sobre los resultados devueltos
+            for (const date in neos) {
+                neos[date].forEach(neo => {
+                    const neoDiv = document.createElement('div');
+                    neoDiv.className = 'neo';
+                    neoDiv.innerHTML = `
+                        <strong>Nombre:</strong> ${neo.name} <br>
+                        <strong>ID:</strong> ${neo.id} <br>
+                        <strong>Tamaño (m):</strong> ${neo.estimated_diameter.meters.estimated_diameter_max.toFixed(2)} <br>
+                        <strong>Fecha de acercamiento:</strong> ${neo.close_approach_data[0].close_approach_date} <br>
+                        <hr>
+                    `;
+                    resultsDiv.appendChild(neoDiv);
+                });
+            }
+        }
+    
+        // Agregar evento al botón para cargar datos
+        document.getElementById('fetchData').addEventListener('click', loadData);
+    </script>
+
+
+</body>
+</html>
