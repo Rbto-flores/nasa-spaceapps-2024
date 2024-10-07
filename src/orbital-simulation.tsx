@@ -44,11 +44,11 @@ const OrbitalSimulation = () => {
     const textureLoader = new THREE.TextureLoader();
     const earthTexture = textureLoader.load('/assets/tierrap.jpg');
     const otherTextures = [
-      textureLoader.load('assets/asteroid.jpg'),
-      textureLoader.load('assets/asteroid.jpg'),
-      textureLoader.load('assets/asteroid.jpg'),
-      textureLoader.load('assets/asteroid.jpg'),
-      textureLoader.load('assets/asteroid.jpg'),
+      textureLoader.load('/assets/asteroid.jpg'),
+      textureLoader.load('/assets/asteroid.jpg'),
+      textureLoader.load('/assets/asteroid.jpg'),
+      textureLoader.load('/assets/asteroid.jpg'),
+      textureLoader.load('/assets/asteroid.jpg'),
     ];
 
 
