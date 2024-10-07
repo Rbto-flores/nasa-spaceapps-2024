@@ -50,6 +50,7 @@ const OrbitalSimulation = () => {
       textureLoader.load('./src/asteroid.jpg'),
       textureLoader.load('./src/asteroid.jpg'),
     ];
+    
 
     const calculateOrbit = (objectData: orbitObject): THREE.Vector3[] => {
       const { e, i_deg, q_au_1 } = objectData;
