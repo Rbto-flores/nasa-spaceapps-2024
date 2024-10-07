@@ -42,15 +42,15 @@ const OrbitalSimulation = () => {
 
     // Cargar las texturas
     const textureLoader = new THREE.TextureLoader();
-    const earthTexture = textureLoader.load('./src/tierrap.jpg');
+    const earthTexture = textureLoader.load('/assets/tierrap.jpg');
     const otherTextures = [
-      textureLoader.load('./src/asteroid.jpg'),
-      textureLoader.load('./src/asteroid.jpg'),
-      textureLoader.load('./src/asteroid.jpg'),
-      textureLoader.load('./src/asteroid.jpg'),
-      textureLoader.load('./src/asteroid.jpg'),
+      textureLoader.load('assets/asteroid.jpg'),
+      textureLoader.load('assets/asteroid.jpg'),
+      textureLoader.load('assets/asteroid.jpg'),
+      textureLoader.load('assets/asteroid.jpg'),
+      textureLoader.load('assets/asteroid.jpg'),
     ];
-    
+
 
     const calculateOrbit = (objectData: orbitObject): THREE.Vector3[] => {
       const { e, i_deg, q_au_1 } = objectData;
@@ -75,22 +75,22 @@ const OrbitalSimulation = () => {
       return points;
     };
 
-    const createTextSprite = (text: string) => {
-      const canvas = document.createElement('canvas');
-      const context = canvas.getContext('2d');
-      if (context) {
-        context.font = '24px Arial';
-        context.fillStyle = 'white';
-        context.fillText(text, 0, 24);
-      }
-      const texture = new THREE.Texture(canvas);
-      texture.needsUpdate = true;
+    // const createTextSprite = (text: string) => {
+    //   const canvas = document.createElement('canvas');
+    //   const context = canvas.getContext('2d');
+    //   if (context) {
+    //     context.font = '24px Arial';
+    //     context.fillStyle = 'white';
+    //     context.fillText(text, 0, 24);
+    //   }
+    //   const texture = new THREE.Texture(canvas);
+    //   texture.needsUpdate = true;
 
-      const spriteMaterial = new THREE.SpriteMaterial({ map: texture });
-      const sprite = new THREE.Sprite(spriteMaterial);
-      sprite.scale.set(2, 1, 1); // Ajustar el tamaño del sprite
-      return sprite;
-    };
+    //   const spriteMaterial = new THREE.SpriteMaterial({ map: texture });
+    //   const sprite = new THREE.Sprite(spriteMaterial);
+    //   sprite.scale.set(2, 1, 1); // Ajustar el tamaño del sprite
+    //   return sprite;
+    // };
 
     // Limpiar el array `orbitsRef.current` antes de agregar nuevas órbitas
     orbitsRef.current = [];
@@ -162,14 +162,14 @@ const OrbitalSimulation = () => {
       camera.updateProjectionMatrix();
     };
 
-    const animate = (time: number) => {
+    const animate = () => {
       requestAnimationFrame(animate);
       animateComet();
       controls.update();
       renderer.render(scene, camera);
     };
 
-    animate(0);
+    animate();
 
     camera.position.set(0, 5, 15);
     controls.update();
